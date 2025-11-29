@@ -1,0 +1,56 @@
+# HumanBrain-TestingLabs Dependencies
+# Python 3.10+ required
+
+# ===== Neural Simulation =====
+brian2==2.5.4                   # Spiking neural networks
+neuron==8.2.2                   # NEURON simulator (compartmental models)
+
+# ===== Scientific Computing =====
+numpy==1.26.2
+scipy==1.11.4
+pandas==2.1.4
+numba==0.58.1                   # JIT compilation for speed
+
+# ===== Machine Learning =====
+torch==2.1.2                    # PyTorch with CUDA support
+torchvision==0.16.2
+torchaudio==2.1.2
+
+# ===== Neuroscience Analysis =====
+mne==1.5.1                      # EEG/MEG analysis
+nilearn==0.10.2                 # Neuroimaging
+nibabel==5.2.0                  # Neuroimaging file I/O
+
+# ===== Visualization =====
+matplotlib==3.8.2
+seaborn==0.13.0
+plotly==5.18.0
+kaleido==0.2.1                  # Static image export for plotly
+
+# ===== Statistical Analysis =====
+statsmodels==0.14.1
+scikit-learn==1.3.2
+pingouin==0.5.4                 # Advanced statistics
+
+# ===== Data Management =====
+h5py==3.10.0                    # HDF5 file format
+zarr==2.16.1                    # Chunked arrays
+dask==2023.12.1                 # Parallel computing
+
+# ===== Utilities =====
+tqdm==4.66.1                    # Progress bars
+pyyaml==6.0.1                   # YAML configuration
+requests==2.31.0                # HTTP requests
+zenodo-get==1.3.4               # Download from Zenodo
+
+# ===== Development =====
+pytest==7.4.3
+pytest-cov==4.1.0
+black==23.12.1
+flake8==7.0.0
+mypy==1.8.0
+
+# ===== Documentation =====
+sphinx==7.2.6
+sphinx-rtd-theme==2.0.0
+nbsphinx==0.9.3                 # Jupyter notebook support

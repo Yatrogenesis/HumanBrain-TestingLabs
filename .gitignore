@@ -1,0 +1,66 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Jupyter
+.ipynb_checkpoints
+*.ipynb
+
+# Data (large files, sensitive)
+data/human_brain_model/
+*.h5
+*.hdf5
+*.zarr
+*.npy
+*.npz
+
+# Results
+results/
+metrics/*.csv
+figures/*.png
+figures/*.pdf
+figures/*.svg
+
+# OS
+.DS_Store
+Thumbs.db
+
+# CUDA
+*.cu.o
+*.ptx
+
+# Logs
+*.log
+*.out

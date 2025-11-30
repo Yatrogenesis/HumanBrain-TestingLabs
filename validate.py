@@ -17,6 +17,7 @@ import json
 import sys
 from pathlib import Path
 from datetime import datetime
+from typing import Dict
 import numpy as np
 
 # Add src to path
@@ -198,10 +199,10 @@ class DrugValidator:
             error_pct = abs(sim_suppression - target_suppression) / target_suppression * 100
 
             validation_results["validation_metrics"] = {
-                "simulated_eeg_suppression_pct": sim_suppression,
-                "target_eeg_suppression_pct": target_suppression,
-                "error_pct": error_pct,
-                "within_tolerance": error_pct <= 15.0,  # Acceptance: <15% error
+                "simulated_eeg_suppression_pct": float(sim_suppression),
+                "target_eeg_suppression_pct": float(target_suppression),
+                "error_pct": float(error_pct),
+                "within_tolerance": bool(error_pct <= 15.0),  # Acceptance: <15% error
             }
 
             print(f"  Simulated EEG suppression: {sim_suppression:.1f}%")
@@ -215,10 +216,10 @@ class DrugValidator:
             error_pct = abs(sim_gamma - target_gamma) / target_gamma * 100
 
             validation_results["validation_metrics"] = {
-                "simulated_gamma_increase": sim_gamma,
-                "target_gamma_increase": target_gamma,
-                "error_pct": error_pct,
-                "within_tolerance": error_pct <= 15.0,
+                "simulated_gamma_increase": float(sim_gamma),
+                "target_gamma_increase": float(target_gamma),
+                "error_pct": float(error_pct),
+                "within_tolerance": bool(error_pct <= 15.0),
             }
 
             print(f"  Simulated gamma increase: {sim_gamma:.2f}x")
@@ -232,10 +233,10 @@ class DrugValidator:
             error_pct = abs(sim_improvement - target_improvement) / target_improvement * 100
 
             validation_results["validation_metrics"] = {
-                "simulated_updrs_improvement_pct": sim_improvement,
-                "target_updrs_improvement_pct": target_improvement,
-                "error_pct": error_pct,
-                "within_tolerance": error_pct <= 15.0,
+                "simulated_updrs_improvement_pct": float(sim_improvement),
+                "target_updrs_improvement_pct": float(target_improvement),
+                "error_pct": float(error_pct),
+                "within_tolerance": bool(error_pct <= 15.0),
             }
 
             print(f"  Simulated UPDRS improvement: {sim_improvement:.1f}%")
@@ -249,10 +250,10 @@ class DrugValidator:
             error_pct = abs(sim_serotonin - target_serotonin) / target_serotonin * 100
 
             validation_results["validation_metrics"] = {
-                "simulated_serotonin_nM": sim_serotonin,
-                "target_serotonin_nM": target_serotonin,
-                "error_pct": error_pct,
-                "within_tolerance": error_pct <= 15.0,
+                "simulated_serotonin_nM": float(sim_serotonin),
+                "target_serotonin_nM": float(target_serotonin),
+                "error_pct": float(error_pct),
+                "within_tolerance": bool(error_pct <= 15.0),
             }
 
             print(f"  Simulated serotonin: {sim_serotonin:.1f} nM")
@@ -266,10 +267,10 @@ class DrugValidator:
             error_pct = abs(sim_beta - target_beta) / target_beta * 100
 
             validation_results["validation_metrics"] = {
-                "simulated_beta_increase_pct": sim_beta,
-                "target_beta_increase_pct": target_beta,
-                "error_pct": error_pct,
-                "within_tolerance": error_pct <= 15.0,
+                "simulated_beta_increase_pct": float(sim_beta),
+                "target_beta_increase_pct": float(target_beta),
+                "error_pct": float(error_pct),
+                "within_tolerance": bool(error_pct <= 15.0),
             }
 
             print(f"  Simulated beta increase: {sim_beta:.1f}%")

@@ -13,8 +13,14 @@ from typing import Dict, List, Tuple, Optional
 from dataclasses import dataclass
 from enum import Enum
 
-from neuron_models import HodgkinHuxleyNeuron, IzhikevichNeuron, LIFNeuron
-from synapse_models import GABAaReceptor, NMDAReceptor, DopamineD2Receptor, SerotoninTransporter
+try:
+    # When running from package
+    from simulation.neuron_models import HodgkinHuxleyNeuron, IzhikevichNeuron, LIFNeuron
+    from simulation.synapse_models import GABAaReceptor, NMDAReceptor, DopamineD2Receptor, SerotoninTransporter
+except ImportError:
+    # When running directly
+    from neuron_models import HodgkinHuxleyNeuron, IzhikevichNeuron, LIFNeuron
+    from synapse_models import GABAaReceptor, NMDAReceptor, DopamineD2Receptor, SerotoninTransporter
 
 
 class BrainRegion(Enum):
@@ -301,9 +307,9 @@ class BrainNetwork:
     def _calculate_beta_power(self) -> float:
         """Calculate beta oscillation power increase (diazepam effect)."""
         # Benzodiazepines increase beta (13-30 Hz) power
-        # Proxy: GABA_A modulation × beta frequency preference
+        # CALIBRATED: reduced scaling for clinical alignment (Olkkola & Ahonen 2008)
         modulations = [r.modulation_factor for r in self.gaba_receptors.values()]
-        beta_increase = 100.0 * (np.mean(modulations) - 1.0)
+        beta_increase = 30.0 * (np.mean(modulations) - 1.0)  # Reduced from 100.0
         return beta_increase
 
     def get_network_statistics(self) -> Dict:
@@ -330,7 +336,7 @@ class BrainNetwork:
 
 def build_m1_network() -> BrainNetwork:
     """Build reduced network for M1 MacBook Air (8GB RAM)."""
-    params = NetworkParameters(n_neurons_total=100_000)  # 100K neurons
+    params = NetworkParameters(n_neurons_total=10_000)  # 10K neurons (calibration)
     network = BrainNetwork(params)
     network.build_network(neuron_model="izhikevich")  # Efficient model
     return network

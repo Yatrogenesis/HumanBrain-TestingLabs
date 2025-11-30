@@ -71,19 +71,8 @@ class CompartmentalPKModel:
         self.k_elimination = params.clearance_L_h_kg * body_weight_kg / self.V_central  # 1/h
         self.k_12 = 0.5  # Central → Peripheral (1/h)
         self.k_21 = 0.3  # Peripheral → Central (1/h)
-
-        # BIOLOGICALLY CALIBRATED BBB transport:
-        # Only FREE (unbound) drug crosses BBB - protein binding is critical
-        # Reference: Hammarlund-Udenaes M (2010) Clin Pharmacokinet 49:691
-        free_fraction = 1.0 - params.protein_binding_fraction  # fu = unbound fraction
-
-        # k_brain_in depends on: BBB permeability × free fraction × partition coefficient
-        # Reduced base rate (0.02) for more realistic kinetics
-        self.k_brain_in = params.bbb_permeability * free_fraction * 0.02 * params.brain_partition_coefficient
-
-        # k_brain_out: efflux typically slower than influx for lipophilic drugs
-        # Reference: Loryan I et al. (2014) Fluids Barriers CNS 11:3
-        self.k_brain_out = 0.02 / params.brain_partition_coefficient  # Inversely related to Kp
+        self.k_brain_in = params.bbb_permeability * 0.1  # Plasma → Brain (1/h)
+        self.k_brain_out = 0.05  # Brain → Plasma (1/h)
 
         # State variables (amounts in mg)
         self.A_central = 0.0  # Amount in central compartment
@@ -196,22 +185,17 @@ class DrugPKDatabase:
         """
         Propofol PK parameters.
 
-        References:
-        - Schnider TW et al. (1998) Anesthesiology 88:1170
-        - Eleveld DJ et al. (2018) Br J Anaesth 120:942 (clinical concentration targets)
-
-        Clinical target: Brain concentration 2-6 μM for anesthesia
-        Only 3% unbound (free) → effective brain uptake is limited
+        Reference: Schnider TW et al. (1998) Anesthesiology 88:1170
         """
         return PKParameters(
             bioavailability=1.0,  # IV only
             absorption_rate_constant=0.0,  # N/A for IV
             volume_of_distribution_L_kg=4.0,  # Large Vd (lipophilic)
-            protein_binding_fraction=0.90,  # Adjusted: effective ~10% free accounts for rapid BBB equilibrium
+            protein_binding_fraction=0.97,  # Highly protein-bound
             clearance_L_h_kg=1.8,  # High hepatic clearance
-            half_life_hours=0.5,  # 30 minutes distribution half-life
-            bbb_permeability=0.95,  # High intrinsic permeability (lipophilic)
-            brain_partition_coefficient=5.0,  # Adjusted for clinical target 2-6 μM brain at 140mg IV
+            half_life_hours=0.5,  # 30 minutes (rapid)
+            bbb_permeability=0.9,  # Highly lipophilic → good BBB penetration
+            brain_partition_coefficient=2.0,  # Concentrates in brain
         )
 
     @staticmethod
@@ -219,22 +203,17 @@ class DrugPKDatabase:
         """
         Ketamine PK parameters.
 
-        References:
-        - Clements JA, Nimmo WS (1981) Br J Anaesth 53:27
-        - Fanta S et al. (2015) Br J Clin Pharmacol 80:1269 (brain concentrations)
-
-        Clinical target: Brain concentration 5-20 μM for anesthesia
-        ~47% protein bound → 53% free, good CNS penetration
+        Reference: Clements JA, Nimmo WS (1981) Br J Anaesth 53:27
         """
         return PKParameters(
-            bioavailability=0.93,  # IM bioavailability ~93%
-            absorption_rate_constant=1.5,  # Rapid IM absorption (Tmax ~20 min)
-            volume_of_distribution_L_kg=3.0,  # Moderate Vd
-            protein_binding_fraction=0.47,  # Less bound than propofol → more free drug
-            clearance_L_h_kg=0.9,  # Hepatic CYP3A4 metabolism
-            half_life_hours=2.5,  # Terminal elimination half-life
-            bbb_permeability=0.90,  # Excellent BBB permeability (lipophilic)
-            brain_partition_coefficient=3.0,  # Brain-plasma ratio ~3-4 in humans
+            bioavailability=0.93,  # IV ≈ 100%, IM ≈ 93%
+            absorption_rate_constant=1.5,  # Rapid IM absorption
+            volume_of_distribution_L_kg=3.0,
+            protein_binding_fraction=0.53,
+            clearance_L_h_kg=0.9,
+            half_life_hours=2.5,
+            bbb_permeability=0.85,  # Good BBB penetration
+            brain_partition_coefficient=1.5,
         )
 
     @staticmethod
@@ -242,29 +221,17 @@ class DrugPKDatabase:
         """
         Levodopa PK parameters.
 
-        References:
-        - Contin M, Martinelli P (2010) Clin Pharmacokinet 49:141
-        - Nutt JG, Fellman JH (1984) Clin Neuropharmacol 7:35 (brain uptake)
-
-        CRITICAL BIOLOGY:
-        1. ~30% oral bioavailability (first-pass decarboxylation in gut)
-        2. LAT1 transporter-mediated BBB crossing (saturable, competitive)
-        3. Only ~1-3% of oral dose reaches brain as L-DOPA
-        4. Then ~10% converted to dopamine by AADC in brain
-        5. Net effect: ~0.1-0.3% of dose becomes brain dopamine
-
-        Clinical target: Effective dopamine increase for 40% UPDRS improvement
+        Reference: Contin M, Martinelli P (2010) Clin Pharmacokinet 49:141
         """
         return PKParameters(
-            bioavailability=0.30,  # 30% after first-pass metabolism
-            absorption_rate_constant=2.0,  # Rapid absorption (Tmax ~1h)
-            volume_of_distribution_L_kg=0.8,  # Small Vd (hydrophilic amino acid)
-            protein_binding_fraction=0.10,  # Low binding, 90% free
-            clearance_L_h_kg=0.5,  # Peripheral AADC decarboxylation
-            half_life_hours=1.5,  # Short plasma half-life
-            # CALIBRATED FOR 40% UPDRS: LAT1 active transport
-            bbb_permeability=0.95,  # Near-maximal LAT1 efficiency
-            brain_partition_coefficient=25.0,  # High brain accumulation via LAT1
+            bioavailability=0.30,  # Low (extensive first-pass metabolism)
+            absorption_rate_constant=2.0,  # Rapid absorption
+            volume_of_distribution_L_kg=0.8,  # Small Vd (hydrophilic)
+            protein_binding_fraction=0.10,  # Low protein binding
+            clearance_L_h_kg=0.5,
+            half_life_hours=1.5,  # Short half-life
+            bbb_permeability=0.6,  # LAT1 transporter-mediated
+            brain_partition_coefficient=0.8,
         )
 
     @staticmethod
@@ -272,28 +239,17 @@ class DrugPKDatabase:
         """
         Fluoxetine PK parameters.
 
-        References:
-        - Hiemke C, Hartter S (2000) Pharmacol Ther 85:11
-        - Karson CN et al. (1993) Arch Gen Psychiatry 50:615 (brain levels)
-
-        CRITICAL BIOLOGY:
-        1. Very lipophilic → accumulates extensively in brain
-        2. Brain/plasma ratio ~20:1 at steady state
-        3. 95% protein bound → only 5% free
-        4. 5-HT increase limited by 5-HT1A autoreceptor feedback
-        5. Therapeutic delay (2-4 weeks) due to autoreceptor desensitization
-
-        Clinical target: ~50 nM synaptic 5-HT (5x baseline)
+        Reference: Hiemke C, Hartter S (2000) Pharmacol Ther 85:11
         """
         return PKParameters(
             bioavailability=0.72,  # Good oral bioavailability
-            absorption_rate_constant=0.5,  # Slow absorption (Tmax ~6-8h)
-            volume_of_distribution_L_kg=20.0,  # Very large Vd (35 L/kg including brain)
-            protein_binding_fraction=0.95,  # 95% bound, only 5% free
-            clearance_L_h_kg=0.02,  # Very low clearance
-            half_life_hours=96.0,  # 4-6 days (accumulation over weeks)
-            bbb_permeability=0.70,  # Good passive diffusion
-            brain_partition_coefficient=1.5,  # Adjusted: Brain Kp ~1-2 for free drug at steady state
+            absorption_rate_constant=0.5,  # Slow absorption
+            volume_of_distribution_L_kg=20.0,  # Very large Vd (lipophilic)
+            protein_binding_fraction=0.95,  # Highly protein-bound
+            clearance_L_h_kg=0.02,  # Low clearance (long half-life)
+            half_life_hours=96.0,  # 4 days (very long)
+            bbb_permeability=0.7,
+            brain_partition_coefficient=1.2,
         )
 
     @staticmethod
@@ -301,91 +257,53 @@ class DrugPKDatabase:
         """
         Diazepam PK parameters.
 
-        References:
-        - Olkkola KT, Ahonen J (2008) Clin Pharmacokinet 47:469
-        - Dhillon S, Richens A (1982) Br J Clin Pharmacol 14:357 (brain levels)
-
-        CRITICAL BIOLOGY:
-        1. 98% protein bound → only 2% free to cross BBB
-        2. Benzodiazepine site is different from propofol anesthetic site
-        3. BZ site has much higher affinity (Ki ~20 nM vs μM for propofol)
-        4. But lower intrinsic efficacy (anxiolytic vs anesthetic)
-
-        Clinical target: 40% beta power increase (anxiolytic effect)
+        Reference: Olkkola KT, Ahonen J (2008) Clin Pharmacokinet 47:469
         """
         return PKParameters(
             bioavailability=1.0,  # Complete oral absorption
-            absorption_rate_constant=1.0,  # Moderate absorption (Tmax ~1h)
-            volume_of_distribution_L_kg=1.1,  # Moderate Vd
-            protein_binding_fraction=0.98,  # CRITICAL: Only 2% free
-            clearance_L_h_kg=0.016,  # Low clearance → long duration
-            half_life_hours=43.0,  # Long half-life (20-100h)
-            bbb_permeability=0.90,  # Good passive diffusion
-            brain_partition_coefficient=3.0,  # Moderate brain uptake
-        )
-
-
-    @staticmethod
-    def get_morphine_pk() -> PKParameters:
-        """
-        Morphine PK parameters.
-        References:
-        - Glare PA, Walsh TD (1991) Clin Pharmacokinet 20:131
-        - Portenoy RK (1996) Anesthesiology 84:1243
-        Clinical target: 50% pain reduction (VAS) at 10mg IV
-        """
-        return PKParameters(
-            bioavailability=0.30,
-            absorption_rate_constant=1.5,
-            volume_of_distribution_L_kg=3.5,
-            protein_binding_fraction=0.35,
-            clearance_L_h_kg=1.0,
-            half_life_hours=3.0,
-            bbb_permeability=0.60,
-            brain_partition_coefficient=2.5,
-        )
-
-    @staticmethod
-    def get_haloperidol_pk() -> PKParameters:
-        """
-        Haloperidol PK parameters.
-        References:
-        - Kudo S, Ishizaki T (1999) Clin Pharmacokinet 37:435
-        - Seeman P (2002) Neuropsychopharmacology 26:587
-        Clinical target: 65% D2 occupancy (antipsychotic threshold)
-
-        Note: Brain partition adjusted to match PET D2 occupancy data
-        (Kapur et al. 2000: 5mg → 65% D2 occupancy)
-        """
-        return PKParameters(
-            bioavailability=0.60,
             absorption_rate_constant=1.0,
-            volume_of_distribution_L_kg=18.0,
-            protein_binding_fraction=0.92,
-            clearance_L_h_kg=0.8,
-            half_life_hours=18.0,
+            volume_of_distribution_L_kg=1.1,
+            protein_binding_fraction=0.98,  # Very high protein binding
+            clearance_L_h_kg=0.016,  # Low clearance
+            half_life_hours=43.0,  # Long half-life (20-100h range)
             bbb_permeability=0.85,
-            brain_partition_coefficient=0.13,  # Calibrated: 1.86 nM brain → 65% D2 at 5mg (Ki=1nM, PET data)
+            brain_partition_coefficient=1.5,
         )
 
     @staticmethod
-    def get_midazolam_pk() -> PKParameters:
+    def get_alprazolam_pk() -> PKParameters:
         """
-        Midazolam PK parameters.
-        References:
-        - Bauer TM et al. (1995) Clin Pharmacokinet 29:157
-        - Olkkola KT, Ahonen J (2008) Clin Pharmacokinet 47:469
-        Clinical target: 70% sedation (Ramsay 3-4) at 0.1mg/kg IV
+        Alprazolam PK parameters.
+
+        Reference: Greenblatt DJ, Wright CE (1993) J Clin Psychiatry 54 Suppl:4-14
         """
         return PKParameters(
-            bioavailability=0.35,
-            absorption_rate_constant=2.0,
-            volume_of_distribution_L_kg=1.5,
-            protein_binding_fraction=0.96,
-            clearance_L_h_kg=0.4,
-            half_life_hours=2.5,
-            bbb_permeability=0.90,
-            brain_partition_coefficient=4.0,
+            bioavailability=0.90,  # High oral bioavailability
+            absorption_rate_constant=1.2,  # Rapid absorption
+            volume_of_distribution_L_kg=0.9,  # Similar to diazepam
+            protein_binding_fraction=0.80,  # 80% protein bound
+            clearance_L_h_kg=0.065,  # Moderate clearance
+            half_life_hours=11.0,  # Intermediate half-life (6-12h)
+            bbb_permeability=0.85,  # Good BBB penetration
+            brain_partition_coefficient=1.4,  # Similar to other BZs
+        )
+
+    @staticmethod
+    def get_clonazepam_pk() -> PKParameters:
+        """
+        Clonazepam PK parameters.
+
+        Reference: Crevoisier C et al. (2003) Eur J Clin Pharmacol 59:275
+        """
+        return PKParameters(
+            bioavailability=0.90,  # High oral bioavailability
+            absorption_rate_constant=0.8,  # Moderate absorption
+            volume_of_distribution_L_kg=3.2,  # Larger Vd than alprazolam
+            protein_binding_fraction=0.85,  # 85% protein bound
+            clearance_L_h_kg=0.055,  # Low clearance
+            half_life_hours=35.0,  # Long half-life (30-40h)
+            bbb_permeability=0.85,  # Good BBB penetration
+            brain_partition_coefficient=1.5,  # Similar to diazepam
         )
 
 
@@ -419,9 +337,8 @@ def simulate_pk_profile(
         "levodopa": (db.get_levodopa_pk(), 197.19),
         "fluoxetine": (db.get_fluoxetine_pk(), 309.33),
         "diazepam": (db.get_diazepam_pk(), 284.74),
-        "morphine": (db.get_morphine_pk(), 285.34),
-        "haloperidol": (db.get_haloperidol_pk(), 375.86),
-        "midazolam": (db.get_midazolam_pk(), 325.77),
+        "alprazolam": (db.get_alprazolam_pk(), 308.77),  # Triazolobenzodiazepine
+        "clonazepam": (db.get_clonazepam_pk(), 315.71),  # Nitrobenzodiazepine
     }
 
     if drug_name not in pk_params_map:

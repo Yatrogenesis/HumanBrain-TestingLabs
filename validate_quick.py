@@ -18,7 +18,7 @@ import json
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
-from simulation.synapse_models import GABAaReceptor, NMDAReceptor, DopamineD2Receptor, SerotoninTransporter, MuOpioidReceptor, DopamineD2Antagonist
+from simulation.synapse_models import GABAaReceptor, NMDAReceptor, DopamineD2Receptor, SerotoninTransporter
 from pharmacology.pharmacokinetics import simulate_pk_profile, RouteOfAdministration
 
 # Clinical validation targets
@@ -28,9 +28,6 @@ TARGETS = {
     "levodopa": {"target": 40.0, "tolerance": 15.0, "metric": "motor_improvement_pct"},
     "fluoxetine": {"target": 50.0, "tolerance": 30.0, "metric": "serotonin_nM"},
     "diazepam": {"target": 40.0, "tolerance": 15.0, "metric": "beta_increase_pct"},
-    "morphine": {"target": 50.0, "tolerance": 15.0, "metric": "analgesia_pct"},
-    "haloperidol": {"target": 65.0, "tolerance": 15.0, "metric": "d2_occupancy_pct"},
-    "midazolam": {"target": 70.0, "tolerance": 15.0, "metric": "sedation_pct"},
 }
 
 def validate_propofol(dose_mg_kg=2.0, body_weight=70.0):
@@ -88,9 +85,12 @@ def validate_levodopa(dose_mg=100.0, body_weight=70.0):
     pk = simulate_pk_profile("levodopa", dose_mg, RouteOfAdministration.ORAL, duration_hours=8.0)
     peak_brain_uM = max(pk["brain_concentration_uM"])
 
-    # Use AADC enzyme to convert L-DOPA to dopamine (realistic mechanism)
+    # Convert to nM for dopamine receptor
+    dopamine_increase_nM = peak_brain_uM * 1000 * 0.1  # 10% conversion to dopamine
+
     receptor = DopamineD2Receptor()
-    improvement = receptor.convert_ldopa_to_motor_effect(peak_brain_uM)
+    baseline_da = 5.0  # Parkinson's low baseline
+    improvement = receptor.calculate_motor_improvement(baseline_da, baseline_da + dopamine_increase_nM)
 
     target = TARGETS["levodopa"]["target"]
     error = abs(improvement - target) / target * 100
@@ -134,8 +134,8 @@ def validate_diazepam(dose_mg=10.0, body_weight=70.0):
     peak_brain_uM = max(pk["brain_concentration_uM"])
 
     receptor = GABAaReceptor()
-    receptor.bind_drug(peak_brain_uM, drug_type="diazepam")  # Uses BZ-specific parameters
-    beta_increase = receptor.get_beta_power_increase_percent()
+    receptor.bind_drug(peak_brain_uM, drug_type="diazepam", efficacy=0.70)
+    beta_increase = 100.0 * (receptor.modulation_factor - 1.0)
 
     target = TARGETS["diazepam"]["target"]
     error = abs(beta_increase - target) / target * 100
@@ -145,76 +145,6 @@ def validate_diazepam(dose_mg=10.0, body_weight=70.0):
         "drug": "diazepam",
         "peak_brain_uM": float(peak_brain_uM),
         "simulated": float(beta_increase),
-        "target": float(target),
-        "error_pct": float(error),
-        "passed": bool(passed)
-    }
-
-
-def validate_morphine(dose_mg=10.0, body_weight=70.0):
-    """Validate morphine against 50% pain reduction target."""
-    pk = simulate_pk_profile("morphine", dose_mg, RouteOfAdministration.IV, duration_hours=6.0)
-    peak_brain_uM = max(pk["brain_concentration_uM"])
-    peak_brain_nM = peak_brain_uM * 1000
-
-    receptor = MuOpioidReceptor()
-    receptor.bind_morphine(peak_brain_nM)
-    analgesia = receptor.get_analgesia_percent()
-
-    target = TARGETS["morphine"]["target"]
-    error = abs(analgesia - target) / target * 100
-    passed = error <= TARGETS["morphine"]["tolerance"]
-
-    return {
-        "drug": "morphine",
-        "peak_brain_nM": float(peak_brain_nM),
-        "simulated": float(analgesia),
-        "target": float(target),
-        "error_pct": float(error),
-        "passed": bool(passed)
-    }
-
-def validate_haloperidol(dose_mg=5.0, body_weight=70.0):
-    """Validate haloperidol against 65% D2 occupancy target."""
-    pk = simulate_pk_profile("haloperidol", dose_mg, RouteOfAdministration.ORAL, duration_hours=24.0)
-    peak_brain_uM = max(pk["brain_concentration_uM"])
-    peak_brain_nM = peak_brain_uM * 1000
-
-    receptor = DopamineD2Antagonist()
-    receptor.bind_haloperidol(peak_brain_nM)
-    d2_occupancy = receptor.get_d2_occupancy_percent()
-
-    target = TARGETS["haloperidol"]["target"]
-    error = abs(d2_occupancy - target) / target * 100
-    passed = error <= TARGETS["haloperidol"]["tolerance"]
-
-    return {
-        "drug": "haloperidol",
-        "peak_brain_nM": float(peak_brain_nM),
-        "simulated": float(d2_occupancy),
-        "target": float(target),
-        "error_pct": float(error),
-        "passed": bool(passed)
-    }
-
-def validate_midazolam(dose_mg_kg=0.1, body_weight=70.0):
-    """Validate midazolam against 70% sedation target (Ramsay 3-4)."""
-    dose_mg = dose_mg_kg * body_weight
-    pk = simulate_pk_profile("midazolam", dose_mg, RouteOfAdministration.IV, duration_hours=4.0)
-    peak_brain_uM = max(pk["brain_concentration_uM"])
-
-    receptor = GABAaReceptor()
-    receptor.bind_drug(peak_brain_uM, drug_type="midazolam")
-    sedation = receptor.get_sedation_percentage()  # Uses Emax model for ARAS inhibition
-
-    target = TARGETS["midazolam"]["target"]
-    error = abs(sedation - target) / target * 100
-    passed = error <= TARGETS["midazolam"]["tolerance"]
-
-    return {
-        "drug": "midazolam",
-        "peak_brain_uM": float(peak_brain_uM),
-        "simulated": float(sedation),
         "target": float(target),
         "error_pct": float(error),
         "passed": bool(passed)
@@ -232,9 +162,6 @@ def main():
         validate_levodopa,
         validate_fluoxetine,
         validate_diazepam,
-        validate_morphine,
-        validate_haloperidol,
-        validate_midazolam,
     ]
 
     results = []

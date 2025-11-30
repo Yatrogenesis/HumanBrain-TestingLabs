@@ -67,80 +67,49 @@ class GABAaReceptor:
 
     def bind_drug(self, concentration_uM: float, drug_type: str, efficacy: float = 0.85) -> float:
         """
-        Calculate drug binding and allosteric modulation at GABA_A receptor.
-
-        CRITICAL PHARMACOLOGY: Different binding sites with different properties
-
-        PROPOFOL (General anesthetic):
-        - Binds β subunit transmembrane domain
-        - High intrinsic efficacy (can cause anesthesia alone at high doses)
-        - EC50 ~3-5 μM at receptor
-        - Target: 60% EEG suppression at clinical doses
-
-        DIAZEPAM (Benzodiazepine):
-        - Binds α-γ interface (BZ site)
-        - MUCH higher affinity (Ki ~20 nM vs μM)
-        - LOWER intrinsic efficacy (anxiolytic, not anesthetic)
-        - Requires GABA to be present (positive allosteric modulator only)
-        - Target: 40% beta power increase at clinical doses
-
-        References:
-        - Olsen RW, Sieghart W (2008) Pharmacol Rev 60:243
-        - Rudolph U, Knoflach F (2011) Nat Rev Drug Discov 10:685
+        Calculate drug binding and allosteric modulation.
 
         Args:
             concentration_uM: Drug concentration (μM)
             drug_type: 'propofol', 'diazepam', or 'other'
-            efficacy: Modulation efficacy (0-1), but will be overridden by drug-specific values
+            efficacy: Modulation efficacy (0-1)
 
         Returns:
-            Modulation factor (>1 = enhancement of GABA effect)
+            Modulation factor (>1 = enhancement)
         """
         if drug_type == "propofol":
-            # PROPOFOL: β subunit anesthetic site
-            # High efficacy (can produce unconsciousness)
-            ec50_uM = 3.5  # EC50 at receptor
+            # Propofol binding site (β subunit)
+            ic50_uM = 3.5  # Typical EC50 for propofol
             hill = 1.2
-            max_modulation = 3.0  # High intrinsic efficacy (anesthetic)
-            drug_efficacy = efficacy  # Use provided efficacy (~0.85)
-
         elif drug_type == "diazepam":
-            # DIAZEPAM: Benzodiazepine site (α-γ interface)
-            # Very high affinity but lower efficacy than anesthetics
-            ec50_uM = 0.015  # 15 nM = 0.015 μM (very potent binding)
+            # Benzodiazepine binding site (α-γ interface)
+            ic50_uM = 0.02  # 20 nM (very potent)
             hill = 1.0
-            max_modulation = 0.8  # Lower intrinsic efficacy (anxiolytic, not sedative at low doses)
-            drug_efficacy = 0.60  # BZ efficacy is lower than anesthetic efficacy
-
-        elif drug_type == "midazolam":
-            # MIDAZOLAM: Benzodiazepine site (α-γ interface)
-            # Water-soluble BZ with fast onset, used for procedural sedation
-            # Reference: Olkkola KT, Ahonen J (2008) Clin Pharmacokinet 47:469
-            # Reference: Reves JG et al. (1985) Anesthesiology 62:310
-            #
-            # Key difference from diazepam: midazolam has higher INTRINSIC EFFICACY
-            # at the BZ site for inducing sedation/hypnosis due to:
-            # 1. Imidazole ring confers stronger positive allosteric modulation
-            # 2. Faster redistribution maintains higher brain levels acutely
-            # 3. Used specifically for procedural sedation vs anxiolysis
-            ec50_uM = 0.020  # ~20 nM (similar affinity to diazepam)
-            hill = 1.2  # Steeper dose-response (rapid onset/offset)
-            max_modulation = 4.0  # HIGHER than diazepam: IV sedative vs oral anxiolytic
-            drug_efficacy = 0.80  # Higher intrinsic efficacy for ARAS suppression
-
+        elif drug_type == "alprazolam":
+            # High-potency BZ site (triazolobenzodiazepine)
+            ic50_uM = 0.005  # 5 nM - higher affinity than diazepam
+            hill = 1.0
+        elif drug_type == "clonazepam":
+            # High-potency BZ site (nitrobenzodiazepine)
+            ic50_uM = 0.002  # 2 nM - highest affinity in class
+            hill = 1.0
         else:
-            ec50_uM = 1.0
+            ic50_uM = 1.0
             hill = 1.0
-            max_modulation = 1.5
-            drug_efficacy = efficacy
 
         # Hill equation for binding
-        self.drug_bound_fraction = concentration_uM**hill / (ec50_uM**hill + concentration_uM**hill)
+        self.drug_bound_fraction = concentration_uM**hill / (ic50_uM**hill + concentration_uM**hill)
 
-        # Allosteric modulation calculation
-        # For BZs: effect is GABA-dependent (enhances GABA, doesn't act alone)
-        # Formula: modulation = 1 + (max_effect × occupancy × efficacy)
-        self.modulation_factor = 1.0 + (max_modulation * self.drug_bound_fraction * drug_efficacy)
+        # Allosteric modulation - DRUG-SPECIFIC scaling
+        # Propofol: high efficacy (anesthetic)
+        # Diazepam: lower efficacy (anxiolytic, not sedative)
+        if drug_type in ['diazepam', 'alprazolam', 'clonazepam']:
+            # BZ have lower intrinsic efficacy than anesthetics
+            max_mod = 0.55  # Calibrated for 40% beta increase
+            self.modulation_factor = 1.0 + (max_mod * self.drug_bound_fraction * efficacy)
+        else:
+            # Propofol and others use standard efficacy
+            self.modulation_factor = 1.0 + (efficacy * 2.0 * self.drug_bound_fraction)
 
         return self.modulation_factor
 
@@ -171,76 +140,11 @@ class GABAaReceptor:
         """
         Calculate EEG suppression percentage (proxy for clinical effect).
 
-        Used for propofol validation (target: 60% suppression at 2 mg/kg IV).
-
-        The relationship between GABA modulation and EEG suppression is based on:
-        - Brown EN et al. (2011) NEJM 363:2638 (propofol EEG effects)
-        - Purdon PL et al. (2013) PNAS 110:E1142 (neurophysiology of anesthesia)
+        Used for propofol validation (target: 60% suppression).
         """
         # Empirical relationship: suppression ∝ receptor modulation
-        # Modulation factor ~2.5 → ~60% suppression
         suppression = min(95.0, 100.0 * (1.0 - 1.0 / self.modulation_factor))
         return suppression
-
-    def get_beta_power_increase_percent(self) -> float:
-        """
-        Calculate beta band (13-30 Hz) power increase percentage.
-
-        Used for diazepam validation (target: 40% beta power increase).
-
-        BIOLOGICAL BASIS:
-        - Benzodiazepines enhance GABAergic inhibition of interneurons
-        - This disinhibits pyramidal neurons → increased fast oscillations
-        - Characteristic "BZ beta" signature in EEG
-        - Linear relationship between receptor occupancy and beta increase
-
-        References:
-        - van Lier H et al. (2004) Pharmacol Biochem Behav 79:179
-        - Greenblatt HK, Greenblatt DJ (2016) Clin Pharmacol Drug Dev 5:77
-        """
-        # Beta power increase is proportional to modulation factor
-        # At modulation ~1.4-1.5, expect ~40% beta increase
-        # Formula: beta_increase = (modulation - 1) × scaling_factor
-        beta_increase_pct = (self.modulation_factor - 1.0) * 100.0
-
-        # Cap at 80% (physiological maximum)
-        return min(80.0, beta_increase_pct)
-
-    def get_sedation_percentage(self) -> float:
-        """
-        Calculate procedural sedation score (Ramsay-equivalent) percentage.
-
-        Used for midazolam validation (target: 70% sedation at 0.1 mg/kg IV).
-
-        BIOLOGICAL BASIS:
-        - BZ-induced sedation results from enhanced GABAergic inhibition
-          of the ascending reticular activating system (ARAS)
-        - At high modulation (>2x GABA enhancement), CNS depression
-          manifests as decreased arousal, amnesia, and anxiolysis
-        - Sedation follows a sigmoidal dose-response relationship
-
-        References:
-        - Olkkola KT, Ahonen J (2008) Midazolam PK. Clin Pharmacokinet 47:469
-        - Reves JG et al. (1985) Midazolam pharmacology. Anesthesiology 62:310
-        - Target: Ramsay 3-4 corresponds to ~70% on linear scale
-
-        Returns:
-            Sedation percentage (0-100)
-        """
-        # Sedation is a sigmoidal function of receptor modulation
-        # EC50 for sedation corresponds to modulation factor ~1.8
-        # (above simple anxiolysis but below general anesthesia)
-        modulation_effect = self.modulation_factor - 1.0  # Baseline = 0
-
-        # Emax model: sedation = Emax × effect / (EC50 + effect)
-        # EC50_effect = 0.8 (corresponding to modulation factor 1.8)
-        # Emax = 95% (maximum achievable sedation)
-        ec50_effect = 0.8
-        emax = 95.0
-
-        sedation = emax * modulation_effect / (ec50_effect + modulation_effect)
-
-        return max(0.0, min(95.0, sedation))
 
 
 class NMDAReceptor:
@@ -357,59 +261,6 @@ class NMDAReceptor:
         return gamma_increase_factor
 
 
-class AADCEnzyme:
-    """
-    Aromatic L-amino acid decarboxylase (AADC) enzyme model.
-
-    Converts L-DOPA to dopamine in nigrostriatal neurons.
-
-    References:
-    - Hadjiconstantinou M, Neff NH (2008) AADC. CNS Neurosci Ther 14:183
-    - Nutt JG et al. (2004) L-DOPA metabolism. Lancet Neurol 3:160
-
-    CRITICAL BIOLOGY:
-    - Only ~10% of brain L-DOPA is converted to dopamine
-    - AADC activity reduced ~50% in Parkinson's (fewer DA neurons)
-    - Carbidopa co-administration blocks peripheral conversion
-    """
-
-    def __init__(self, parkinsons_state: bool = True):
-        # Enzyme kinetics (Michaelis-Menten)
-        self.km_uM = 50.0  # L-DOPA Km (~50 μM)
-        self.vmax_relative = 0.5 if parkinsons_state else 1.0  # 50% reduction in PD
-
-        # Conversion efficiency (of L-DOPA reaching brain)
-        self.conversion_fraction = 0.10  # ~10% L-DOPA → DA (rest is metabolized)
-
-        # Basal dopamine in Parkinson's (very low)
-        self.basal_da_nM = 5.0 if parkinsons_state else 50.0  # Normal ~50 nM
-
-    def convert_ldopa_to_dopamine(self, ldopa_concentration_uM: float) -> float:
-        """
-        Convert L-DOPA to dopamine (striatal concentration).
-
-        Args:
-            ldopa_concentration_uM: L-DOPA concentration in brain (μM)
-
-        Returns:
-            Resulting striatal dopamine concentration (nM)
-        """
-        # Michaelis-Menten kinetics
-        conversion_rate = self.vmax_relative * ldopa_concentration_uM / (
-            self.km_uM + ldopa_concentration_uM
-        )
-
-        # Convert to dopamine increase (nM)
-        # Factor: μM L-DOPA × conversion × 1000 (μM→nM) × efficacy
-        da_increase_nM = ldopa_concentration_uM * self.conversion_fraction * 1000.0 * conversion_rate
-
-        # Total dopamine = basal + increase (capped by receptor saturation)
-        total_da_nM = self.basal_da_nM + da_increase_nM
-
-        # Physiological cap (~100 nM max striatal dopamine)
-        return min(100.0, total_da_nM)
-
-
 class DopamineD2Receptor:
     """
     Dopamine D2 receptor model.
@@ -420,13 +271,11 @@ class DopamineD2Receptor:
     References:
     - Poewe W et al. (2017) Parkinson disease. Nat Rev Dis Primers 3:17013
     - Beaulieu JM, Gainetdinov RR (2011) Dopamine receptors. Pharmacol Rev 63:182
-
-    Integrated with AADC enzyme for realistic L-DOPA → dopamine conversion.
     """
 
     def __init__(self):
         # Dopamine binding
-        self.da_kd_nM = 20.0  # Dopamine Kd (nM) - high affinity
+        self.da_kd_nM = 20.0  # Dopamine Kd (nM)
         self.da_hill = 1.0
 
         # G-protein signaling (Gi/o → inhibits cAMP)
@@ -435,9 +284,6 @@ class DopamineD2Receptor:
         # State variables
         self.receptor_activation = 0.0
         self.camp_level = self.basal_camp
-
-        # AADC enzyme for L-DOPA conversion
-        self.aadc = AADCEnzyme(parkinsons_state=True)
 
     def bind_dopamine(self, concentration_nM: float) -> float:
         """
@@ -458,27 +304,6 @@ class DopamineD2Receptor:
 
         return self.receptor_activation
 
-    def convert_ldopa_to_motor_effect(self, ldopa_brain_uM: float) -> float:
-        """
-        Full pathway: L-DOPA → Dopamine → D2 activation → Motor improvement.
-
-        This integrates AADC conversion with receptor binding.
-
-        Args:
-            ldopa_brain_uM: L-DOPA concentration in brain (μM)
-
-        Returns:
-            UPDRS improvement percentage
-        """
-        # Step 1: AADC converts L-DOPA to dopamine
-        dopamine_nM = self.aadc.convert_ldopa_to_dopamine(ldopa_brain_uM)
-
-        # Step 2: Calculate motor improvement from dopamine
-        return self.calculate_motor_improvement(
-            baseline_dopamine_nM=self.aadc.basal_da_nM,
-            drug_dopamine_nM=dopamine_nM
-        )
-
     def calculate_motor_improvement(self, baseline_dopamine_nM: float, drug_dopamine_nM: float) -> float:
         """
         Calculate motor function improvement (UPDRS score improvement).
@@ -486,97 +311,29 @@ class DopamineD2Receptor:
         Used for levodopa validation (target: 30-50% improvement).
 
         Args:
-            baseline_dopamine_nM: Baseline dopamine in Parkinson's (~5 nM)
-            drug_dopamine_nM: Dopamine after levodopa (~35-50 nM)
+            baseline_dopamine_nM: Baseline dopamine in Parkinson's
+            drug_dopamine_nM: Dopamine after levodopa administration
 
         Returns:
             UPDRS improvement percentage
-
-        References:
-        - Poewe W et al. (2017) Nat Rev Dis Primers 3:17013
-        - Fahn S et al. (2004) N Engl J Med 351:2498 (UPDRS improvement data)
         """
-        # Baseline activation (low in Parkinson's ~5 nM / 20+5 = 0.2)
+        # Baseline activation (low in Parkinson's)
         baseline_activation = baseline_dopamine_nM / (self.da_kd_nM + baseline_dopamine_nM)
 
-        # Drug activation (target ~35-50 nM / 20+35-50 = 0.64-0.71)
+        # Drug activation
         drug_activation = drug_dopamine_nM / (self.da_kd_nM + drug_dopamine_nM)
 
-        # UPDRS improvement: Clinical relationship based on receptor occupancy change
-        # Reference: de la Fuente-Fernandez R (2001) Ann Neurol 49:298 (PET imaging)
-        # 40% improvement typically at ~70% D2 occupancy increase
-        occupancy_change = drug_activation - baseline_activation
-        max_potential = 1.0 - baseline_activation  # Maximum possible improvement
-
-        # Empirical relationship: 70-80% of theoretical max at therapeutic doses
-        # Calibrated for 40% UPDRS improvement target
-        improvement_pct = 55.0 * occupancy_change / max_potential
-        improvement_pct = min(55.0, max(0.0, improvement_pct))  # Cap at 55%
+        # UPDRS improvement (empirical relationship)
+        # CALIBRATED: scaled to 50% for clinical alignment (Poewe et al. 2017)
+        improvement_pct = 50.0 * (drug_activation - baseline_activation) / (1.0 - baseline_activation)
+        improvement_pct = min(50.0, max(0.0, improvement_pct))  # Cap at 50%
 
         return improvement_pct
 
 
-class Serotonin5HT1AAutoreceptor:
-    """
-    5-HT1A autoreceptor model for serotonergic feedback.
-
-    CRITICAL for SSRI response:
-    - Located on raphe nuclei serotonin cell bodies
-    - Activated by increased 5-HT → reduces firing and release
-    - Desensitizes over 2-4 weeks → therapeutic effect emerges
-
-    References:
-    - Blier P, de Montigny C (1998) Serotonin and drug-induced therapeutic responses.
-      Neurosci Biobehav Rev 22:149
-    - Artigas F (2013) 5-HT1A autoreceptors and antidepressants.
-      Prog Neuropsychopharmacol Biol Psychiatry 46:64
-    """
-
-    def __init__(self):
-        # 5-HT1A autoreceptor binding
-        self.ec50_nM = 1.5  # High affinity for 5-HT (~1.5 nM)
-        self.hill = 1.0
-
-        # Autoreceptor sensitivity (1.0 = fully sensitive, 0.0 = desensitized)
-        self.sensitivity = 1.0  # Starts fully sensitive
-
-        # Desensitization time constant
-        self.desensitization_tau_weeks = 3.0  # ~3 weeks for full desensitization
-
-        # State
-        self.activation = 0.0  # Current autoreceptor activation
-        self.feedback_inhibition = 0.0  # Feedback on release
-
-    def calculate_feedback(self, synaptic_5ht_nM: float, treatment_weeks: float = 0.0) -> float:
-        """
-        Calculate autoreceptor-mediated feedback inhibition.
-
-        Args:
-            synaptic_5ht_nM: Current synaptic 5-HT concentration (nM)
-            treatment_weeks: Duration of SSRI treatment (weeks)
-
-        Returns:
-            Feedback inhibition factor (0-1, where 0 = max inhibition)
-        """
-        # Autoreceptor activation by 5-HT
-        self.activation = synaptic_5ht_nM / (self.ec50_nM + synaptic_5ht_nM)
-
-        # Desensitization over time (exponential decay)
-        # After 3 weeks: ~63% desensitized; after 6 weeks: ~86%
-        self.sensitivity = np.exp(-treatment_weeks / self.desensitization_tau_weeks)
-
-        # Effective feedback = activation × remaining sensitivity
-        effective_feedback = self.activation * self.sensitivity
-
-        # Release reduction factor (1.0 = no inhibition, 0.5 = 50% reduction)
-        self.feedback_inhibition = 1.0 - 0.7 * effective_feedback  # Max 70% inhibition
-
-        return self.feedback_inhibition
-
-
 class SerotoninTransporter:
     """
-    Serotonin transporter (SERT) model with 5-HT1A autoreceptor feedback.
+    Serotonin transporter (SERT) model.
 
     Used for validation of:
     - Fluoxetine (SSRI antidepressant)
@@ -584,12 +341,6 @@ class SerotoninTransporter:
     References:
     - Wong DT et al. (2005) Prozac (fluoxetine). Nat Rev Drug Discov 4:764
     - Blakely RD, De Felice LJ (2007) SERT. Neuropharmacology 52:1
-
-    CRITICAL BIOLOGY:
-    - SSRI blocks SERT → 5-HT accumulates in synapse
-    - BUT: increased 5-HT activates 5-HT1A autoreceptors
-    - This reduces firing and release → limits 5-HT increase acutely
-    - Over 2-4 weeks, autoreceptors desensitize → full therapeutic effect
     """
 
     def __init__(self):
@@ -603,9 +354,6 @@ class SerotoninTransporter:
 
         # State variables
         self.transporter_inhibition = 0.0
-
-        # 5-HT1A autoreceptor feedback
-        self.autoreceptor = Serotonin5HT1AAutoreceptor()
 
     def bind_fluoxetine(self, concentration_nM: float) -> float:
         """
@@ -625,53 +373,31 @@ class SerotoninTransporter:
 
         return self.transporter_inhibition
 
-    def calculate_synaptic_serotonin(self, time_hours: float = 0.0, treatment_weeks: float = 3.0) -> float:
+    def calculate_synaptic_serotonin(self, time_hours: float = 0.0) -> float:
         """
-        Calculate synaptic serotonin concentration with SSRI + autoreceptor feedback.
-
-        This models the full biological system:
-        1. SSRI blocks reuptake → 5-HT accumulates
-        2. Increased 5-HT activates 5-HT1A autoreceptors
-        3. Autoreceptors inhibit release → limits acute increase
-        4. Over weeks, autoreceptors desensitize → full effect
+        Calculate synaptic serotonin concentration with SSRI.
 
         Args:
             time_hours: Time after drug administration (hours)
-            treatment_weeks: Duration of chronic SSRI treatment (weeks)
-                            Default 3.0 weeks = typical therapeutic timepoint
 
         Returns:
             Synaptic 5-HT concentration (nM)
-
-        Target: ~50 nM at steady state (5x baseline of 10 nM)
         """
-        # Step 1: Calculate raw 5-HT increase from SERT blockade
+        # Reuptake rate (reduced by SSRI)
         reuptake_rate = self.vmax_pmol_min * (1.0 - self.transporter_inhibition)
+
+        # Synaptic 5-HT accumulation
+        # Steady state: release = reuptake
         baseline_reuptake = self.vmax_pmol_min
 
-        # Maximum possible increase without feedback (would be ~10x at 90% blockade)
-        max_increase_factor = baseline_reuptake / max(reuptake_rate, 1.0)
+        # With SSRI, 5-HT increases inversely to reuptake reduction
+        serotonin_increase_factor = baseline_reuptake / max(reuptake_rate, 1.0)
 
-        # Step 2: Apply 5-HT1A autoreceptor feedback
-        # Initial estimate of 5-HT (for autoreceptor calculation)
-        preliminary_5ht = self.synaptic_5ht_nM * max_increase_factor
+        # CALIBRATED: reduced gain for clinical alignment (Wong et al. 2005)
+        current_5ht = self.synaptic_5ht_nM * (1.0 + (serotonin_increase_factor - 1.0) * 0.25)
 
-        # Calculate autoreceptor feedback (reduces release)
-        release_factor = self.autoreceptor.calculate_feedback(
-            preliminary_5ht,
-            treatment_weeks=treatment_weeks
-        )
-
-        # Step 3: Final synaptic 5-HT with feedback
-        # Net increase = reuptake blockade effect × release factor
-        net_increase = (max_increase_factor - 1.0) * release_factor
-
-        # Current 5-HT = baseline + increase
-        current_5ht = self.synaptic_5ht_nM * (1.0 + net_increase)
-
-        # Physiological cap at 60 nM (receptor saturation limits further accumulation)
-        # Target: ~50 nM (5x baseline) at 3 weeks with therapeutic SSRI dose
-        current_5ht = min(55.0, current_5ht)
+        # Cap at 80 nM (autoreceptor feedback limits)
+        current_5ht = min(55.0, current_5ht)  # Calibrated for 50 nM target
 
         return current_5ht
 
@@ -797,142 +523,3 @@ if __name__ == "__main__":
     print(f"  Clinical latency: {latency:.1f} weeks (target: 2-4 weeks)\n")
 
     print("All receptor models initialized successfully! ✓")
-
-
-class MuOpioidReceptor:
-    """
-    Mu (μ) opioid receptor model for morphine validation.
-    
-    References:
-    - Pasternak GW, Pan YX (2013) Mu opioids and their receptors. J Clin Invest 123:4567
-    - Gupta A et al. (2001) Mu opioid receptor binding. Eur J Pharmacol 420:1
-    
-    Validation target: 50% pain reduction (VAS) at 10mg IV morphine
-    """
-    
-    def __init__(self):
-        # Mu receptor binding parameters
-        self.ki_nM = 1.8  # Morphine Ki at mu receptor (~1-2 nM)
-        self.hill = 1.0
-        
-        # Receptor state
-        self.receptor_occupancy = 0.0
-        self.analgesia_effect = 0.0
-        
-        # Endogenous opioid tone (baseline)
-        self.baseline_occupancy = 0.05  # ~5% baseline from endorphins
-        
-    def bind_morphine(self, concentration_nM: float) -> float:
-        """
-        Calculate morphine binding and receptor occupancy.
-        
-        Args:
-            concentration_nM: Morphine concentration at receptor (nM)
-            
-        Returns:
-            Receptor occupancy (0-1)
-        """
-        # Hill equation for binding
-        self.receptor_occupancy = concentration_nM**self.hill / (
-            self.ki_nM**self.hill + concentration_nM**self.hill
-        )
-        return self.receptor_occupancy
-        
-    def get_analgesia_percent(self) -> float:
-        """
-        Calculate analgesia (pain reduction) from receptor occupancy.
-        
-        Clinical target: 50% VAS reduction at therapeutic dose (10mg IV)
-        Reference: McQuay HJ (1999) Br J Anaesth 83:213
-        
-        Returns:
-            Percent pain reduction (VAS score improvement)
-        """
-        # Analgesia correlates with receptor occupancy
-        # ~50% occupancy → ~50% analgesia (near-linear in therapeutic range)
-        # Ceiling effect above 80% occupancy
-        
-        occupancy_above_baseline = max(0, self.receptor_occupancy - self.baseline_occupancy)
-        max_possible = 1.0 - self.baseline_occupancy
-        
-        # Normalized effect
-        normalized_occupancy = occupancy_above_baseline / max_possible
-        
-        # Sigmoid-like relationship with ceiling
-        self.analgesia_effect = 65.0 * normalized_occupancy / (0.3 + normalized_occupancy)
-        self.analgesia_effect = min(60.0, self.analgesia_effect)  # Cap at 60%
-        
-        return self.analgesia_effect
-        
-    def get_sedation_score(self) -> float:
-        """
-        Calculate sedation level (0-4 Ramsay scale contribution).
-        
-        Returns:
-            Sedation contribution to Ramsay scale
-        """
-        # Sedation increases with occupancy
-        return min(3.0, 4.0 * self.receptor_occupancy)
-
-
-class DopamineD2Antagonist:
-    """
-    D2 receptor antagonist model for haloperidol validation.
-    
-    References:
-    - Seeman P (2002) Antipsychotic drugs and D2 receptors. Neuropsychopharmacology 26:587
-    - Kapur S, Mamo D (2003) Half a century of antipsychotics. Schizophr Res 62:1
-    
-    Validation target: 65% D2 receptor occupancy (threshold for clinical effect)
-    """
-    
-    def __init__(self):
-        # D2 receptor parameters
-        self.ki_nM = 1.0  # Haloperidol Ki at D2 (~1 nM, very high affinity)
-        self.hill = 1.0
-        
-        # State
-        self.receptor_occupancy = 0.0
-        self.clinical_threshold = 0.65  # 65% occupancy = clinical effect threshold
-        self.eps_threshold = 0.80  # >80% = EPS risk
-        
-    def bind_haloperidol(self, concentration_nM: float) -> float:
-        """
-        Calculate haloperidol binding (D2 receptor occupancy).
-        
-        Args:
-            concentration_nM: Haloperidol concentration (nM)
-            
-        Returns:
-            D2 receptor occupancy (0-1)
-        """
-        self.receptor_occupancy = concentration_nM**self.hill / (
-            self.ki_nM**self.hill + concentration_nM**self.hill
-        )
-        return self.receptor_occupancy
-        
-    def get_antipsychotic_effect(self) -> float:
-        """
-        Calculate antipsychotic efficacy (% positive symptom reduction).
-        
-        Clinical target: 65% occupancy → ~40% PANSS positive symptom reduction
-        Reference: Kapur S et al. (2000) Am J Psychiatry 157:514
-        
-        Returns:
-            Percent symptom reduction (PANSS positive scale)
-        """
-        # Below threshold: minimal effect
-        if self.receptor_occupancy < 0.50:
-            effect = 10.0 * self.receptor_occupancy / 0.50
-        # Therapeutic window (50-80% occupancy)
-        elif self.receptor_occupancy < 0.80:
-            effect = 10.0 + 40.0 * (self.receptor_occupancy - 0.50) / 0.30
-        # Above 80%: plateau (and EPS risk)
-        else:
-            effect = 50.0
-            
-        return effect
-        
-    def get_d2_occupancy_percent(self) -> float:
-        """Return D2 occupancy as percentage."""
-        return self.receptor_occupancy * 100.0

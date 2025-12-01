@@ -1,0 +1,468 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "created": "2025-11-30",
+    "description": "Gold standard pharmacological data for model validation",
+    "curator": "Francisco Molina Burgos (Yatrogenesis)",
+    "orcid": "0009-0008-6093-8267"
+  },
+  "drugs": {
+    "propofol": {
+      "class": "IV Anesthetic",
+      "mechanism": "GABA-A positive allosteric modulator (beta subunit)",
+      "binding_site": "anesthetic_site",
+      "pharmacodynamics": {
+        "ki_nM": 2500,
+        "ec50_uM": 3.0,
+        "hill_coefficient": 1.7,
+        "intrinsic_efficacy": 0.95,
+        "references": [
+          "Franks NP, Lieb WR (1994) Molecular and cellular mechanisms of general anaesthesia. Nature 367:607-614",
+          "Hales TG, Lambert JJ (1991) The actions of propofol on inhibitory amino acid receptors. Br J Pharmacol 104:619-28"
+        ]
+      },
+      "pharmacokinetics": {
+        "bioavailability": 1.0,
+        "vd_L_kg": 4.0,
+        "protein_binding": 0.97,
+        "clearance_L_h_kg": 1.8,
+        "half_life_h": 0.5,
+        "brain_partition": 2.0,
+        "molecular_weight": 178.27,
+        "references": [
+          "Schnider TW et al (1998) The influence of method of administration and covariates on the pharmacokinetics of propofol. Anesthesiology 88:1170-82",
+          "Eleveld DJ et al (2018) Pharmacokinetic-pharmacodynamic model for propofol. Br J Anaesth 120:942-959"
+        ]
+      },
+      "clinical_effects": {
+        "dose_mg_kg": 2.0,
+        "route": "IV",
+        "expected_effects": {
+          "sedation_pct": 95,
+          "amnesia_pct": 90,
+          "anxiolysis_pct": 70,
+          "loss_of_consciousness_pct": 90
+        },
+        "eeg_markers": {
+          "beta_increase_pct": -30,
+          "alpha_increase_pct": 40,
+          "burst_suppression": true
+        },
+        "references": [
+          "Brown EN et al (2011) General anesthesia, sleep, and coma. N Engl J Med 363:2638-50",
+          "Purdon PL et al (2015) Clinical Electroencephalography for Anesthesiologists. Anesthesiology 123:937-60"
+        ]
+      }
+    },
+    "ketamine": {
+      "class": "Dissociative Anesthetic",
+      "mechanism": "NMDA receptor antagonist (NR2B subunit)",
+      "binding_site": "nmda_channel",
+      "pharmacodynamics": {
+        "ki_nM": 500,
+        "ic50_uM": 0.5,
+        "hill_coefficient": 1.0,
+        "intrinsic_efficacy": -1.0,
+        "references": [
+          "Anis NA et al (1983) The dissociative anaesthetics, ketamine and phencyclidine, selectively reduce excitation of central mammalian neurones. Br J Pharmacol 79:565-75",
+          "Zanos P, Gould TD (2018) Mechanisms of ketamine action as an antidepressant. Mol Psychiatry 23:801-811"
+        ]
+      },
+      "pharmacokinetics": {
+        "bioavailability_IM": 0.93,
+        "bioavailability_oral": 0.16,
+        "vd_L_kg": 3.0,
+        "protein_binding": 0.53,
+        "clearance_L_h_kg": 0.9,
+        "half_life_h": 2.5,
+        "brain_partition": 1.5,
+        "molecular_weight": 237.73,
+        "references": [
+          "Clements JA, Nimmo WS (1981) Pharmacokinetics and analgesic effect of ketamine in man. Br J Anaesth 53:27-30",
+          "Domino EF (2010) Taming the ketamine tiger. Anesthesiology 113:678-84"
+        ]
+      },
+      "clinical_effects": {
+        "dose_mg_kg": 2.0,
+        "route": "IM",
+        "expected_effects": {
+          "dissociation_pct": 90,
+          "analgesia_pct": 85,
+          "amnesia_pct": 70,
+          "catalepsy_pct": 80
+        },
+        "eeg_markers": {
+          "gamma_increase_pct": 50,
+          "theta_increase_pct": 30,
+          "delta_increase_pct": 20
+        },
+        "references": [
+          "White PF et al (1982) Ketamine--its pharmacology and therapeutic uses. Anesthesiology 56:119-36",
+          "Muthukumaraswamy SD et al (2015) Evidence that subanesthetic doses of ketamine cause sustained disruptions of NMDA and AMPA-mediated frontoparietal connectivity. J Neurosci 35:11694-706"
+        ]
+      }
+    },
+    "diazepam": {
+      "class": "Benzodiazepine",
+      "mechanism": "GABA-A positive allosteric modulator (BZ site)",
+      "binding_site": "bz_site",
+      "pharmacodynamics": {
+        "ki_nM": 15,
+        "ec50_nM": 30,
+        "hill_coefficient": 1.2,
+        "intrinsic_efficacy": 0.85,
+        "subunit_selectivity": {
+          "alpha1": 1.0,
+          "alpha2": 1.0,
+          "alpha3": 1.0,
+          "alpha5": 1.0
+        },
+        "references": [
+          "Mohler H, Okada T (1977) Benzodiazepine receptor: demonstration in the central nervous system. Science 198:849-51",
+          "Sigel E, Ernst M (2018) The Benzodiazepine Binding Sites of GABAA Receptors. Trends Pharmacol Sci 39:659-671"
+        ]
+      },
+      "pharmacokinetics": {
+        "bioavailability": 0.93,
+        "vd_L_kg": 1.1,
+        "protein_binding": 0.98,
+        "clearance_L_h_kg": 0.016,
+        "half_life_h": 43,
+        "brain_partition": 1.5,
+        "molecular_weight": 284.74,
+        "cyp_metabolism": {"CYP3A4": 0.50, "CYP2C19": 0.40, "CYP2C9": 0.10},
+        "references": [
+          "Greenblatt DJ et al (1980) Clinical pharmacokinetics of the benzodiazepines. Clin Pharmacokinet 5:296-326",
+          "Olkkola KT, Ahonen J (2008) Midazolam and other benzodiazepines. Handb Exp Pharmacol 182:335-60"
+        ]
+      },
+      "clinical_effects": {
+        "dose_mg": 10,
+        "route": "oral",
+        "expected_effects": {
+          "anxiolysis_pct": 80,
+          "sedation_pct": 60,
+          "amnesia_pct": 50,
+          "muscle_relaxation_pct": 70,
+          "anticonvulsant_pct": 85
+        },
+        "receptor_occupancy": {
+          "dose_10mg_pct": 75,
+          "dose_20mg_pct": 88
+        },
+        "references": [
+          "Mandrioli R et al (2008) Benzodiazepine metabolism: an analytical perspective. Curr Drug Metab 9:827-44",
+          "Rudolph U, Mohler H (2004) Analysis of GABAA receptor function. Trends Pharmacol Sci 25:512-8"
+        ]
+      }
+    },
+    "alprazolam": {
+      "class": "Triazolobenzodiazepine",
+      "mechanism": "GABA-A positive allosteric modulator (BZ site)",
+      "binding_site": "bz_site",
+      "pharmacodynamics": {
+        "ki_nM": 10,
+        "ec50_nM": 25,
+        "hill_coefficient": 1.3,
+        "intrinsic_efficacy": 0.80,
+        "references": [
+          "Sieghart W (1995) Structure and pharmacology of GABAA receptor subtypes. Pharmacol Rev 47:181-234",
+          "PDSP Ki Database - NIMH Psychoactive Drug Screening Program"
+        ]
+      },
+      "pharmacokinetics": {
+        "bioavailability": 0.88,
+        "vd_L_kg": 0.9,
+        "protein_binding": 0.80,
+        "clearance_L_h_kg": 0.065,
+        "half_life_h": 11,
+        "brain_partition": 0.85,
+        "molecular_weight": 308.77,
+        "cyp_metabolism": {"CYP3A4": 0.95, "CYP2C19": 0.05},
+        "references": [
+          "Greenblatt DJ, Wright CE (1993) Clinical pharmacokinetics of alprazolam. Clin Pharmacokinet 24:453-71",
+          "Drover DR (2004) Comparative pharmacokinetics and pharmacodynamics of short-acting hypnosedatives. Clin Pharmacokinet 43:227-38"
+        ]
+      },
+      "clinical_effects": {
+        "dose_mg": 2.0,
+        "route": "oral",
+        "expected_effects": {
+          "anxiolysis_pct": 90,
+          "sedation_pct": 45,
+          "amnesia_pct": 40
+        },
+        "receptor_occupancy": {
+          "dose_2mg_pct": 90
+        },
+        "references": [
+          "Jonas JM, Cohon MS (1993) A comparison of alprazolam, lorazepam, and placebo. J Clin Psychiatry 54:17-21"
+        ]
+      }
+    },
+    "zolpidem": {
+      "class": "Imidazopyridine (Z-drug)",
+      "mechanism": "GABA-A alpha-1 selective positive modulator",
+      "binding_site": "bz_site",
+      "pharmacodynamics": {
+        "ki_nM": 20,
+        "ec50_nM": 40,
+        "hill_coefficient": 1.1,
+        "intrinsic_efficacy": 0.95,
+        "subunit_selectivity": {
+          "alpha1": 1.0,
+          "alpha2": 0.15,
+          "alpha3": 0.15,
+          "alpha5": 0.10
+        },
+        "references": [
+          "Sanger DJ (2004) The pharmacology and mechanisms of action of the hypnotic drugs. CNS Drug Rev 10:161-82",
+          "Dang A et al (2011) Comparative efficacy and tolerability of zolpidem. J Clin Sleep Med 7:282-8"
+        ]
+      },
+      "pharmacokinetics": {
+        "bioavailability": 0.70,
+        "vd_L_kg": 0.54,
+        "protein_binding": 0.92,
+        "clearance_L_h_kg": 0.25,
+        "half_life_h": 2.5,
+        "brain_partition": 0.80,
+        "molecular_weight": 307.39,
+        "cyp_metabolism": {"CYP3A4": 0.60, "CYP2C9": 0.22, "CYP1A2": 0.14},
+        "references": [
+          "Salva P, Costa J (1995) Clinical pharmacokinetics and pharmacodynamics of zolpidem. Clin Pharmacokinet 29:142-53",
+          "Greenblatt DJ et al (2014) Zolpidem pharmacokinetics. Clin Pharmacol Drug Dev 3:109-17"
+        ]
+      },
+      "clinical_effects": {
+        "dose_mg": 10,
+        "route": "oral",
+        "expected_effects": {
+          "sedation_pct": 95,
+          "hypnosis_pct": 90,
+          "amnesia_pct": 60,
+          "anxiolysis_pct": 30
+        },
+        "receptor_occupancy": {
+          "dose_10mg_pct": 95
+        },
+        "references": [
+          "Holm KJ, Goa KL (2000) Zolpidem: an update of its pharmacology, therapeutic efficacy and tolerability. Drugs 59:865-89"
+        ]
+      }
+    },
+    "midazolam": {
+      "class": "Imidazobenzodiazepine",
+      "mechanism": "GABA-A positive allosteric modulator (BZ site)",
+      "binding_site": "bz_site",
+      "pharmacodynamics": {
+        "ki_nM": 3,
+        "ec50_nM": 10,
+        "hill_coefficient": 1.4,
+        "intrinsic_efficacy": 0.90,
+        "references": [
+          "Mohler H (2006) GABAA receptor diversity and pharmacology. Cell Tissue Res 326:505-16",
+          "PDSP Ki Database"
+        ]
+      },
+      "pharmacokinetics": {
+        "bioavailability_oral": 0.36,
+        "bioavailability_IM": 0.90,
+        "vd_L_kg": 1.1,
+        "protein_binding": 0.97,
+        "clearance_L_h_kg": 0.35,
+        "half_life_h": 2.5,
+        "brain_partition": 1.2,
+        "molecular_weight": 325.77,
+        "cyp_metabolism": {"CYP3A4": 0.95},
+        "references": [
+          "Reves JG et al (1985) Midazolam: pharmacology and uses. Anesthesiology 62:310-24",
+          "Bauer TM et al (1995) Prolonged sedation due to accumulation of conjugated metabolites. Lancet 346:145-7"
+        ]
+      },
+      "clinical_effects": {
+        "dose_mg": 15,
+        "route": "oral",
+        "expected_effects": {
+          "amnesia_pct": 95,
+          "sedation_pct": 80,
+          "anxiolysis_pct": 85
+        },
+        "references": [
+          "Dundee JW et al (1984) Midazolam: a review. Drugs 28:519-43"
+        ]
+      }
+    },
+    "morphine": {
+      "class": "Opioid Agonist",
+      "mechanism": "Mu opioid receptor agonist",
+      "binding_site": "mu_opioid",
+      "pharmacodynamics": {
+        "ki_nM": 1.8,
+        "ec50_nM": 15,
+        "hill_coefficient": 1.0,
+        "intrinsic_efficacy": 1.0,
+        "references": [
+          "Pasternak GW (2014) Opioids and their receptors. Neuropsychopharmacology 39:218-9",
+          "Stein C (2016) Opioid Receptors. Annu Rev Med 67:433-51"
+        ]
+      },
+      "pharmacokinetics": {
+        "bioavailability_oral": 0.25,
+        "bioavailability_IM": 0.90,
+        "vd_L_kg": 3.3,
+        "protein_binding": 0.35,
+        "clearance_L_h_kg": 1.1,
+        "half_life_h": 3.0,
+        "brain_partition": 0.5,
+        "molecular_weight": 285.34,
+        "references": [
+          "Mazoit JX et al (2007) Pharmacokinetics of unchanged morphine. Br J Anaesth 99:228-33"
+        ]
+      },
+      "clinical_effects": {
+        "dose_mg": 10,
+        "route": "IM",
+        "expected_effects": {
+          "analgesia_pct": 85,
+          "euphoria_pct": 50,
+          "sedation_pct": 40,
+          "respiratory_depression_pct": 30
+        },
+        "references": [
+          "Mather LE (1983) Clinical pharmacokinetics of morphine. Clin Pharmacokinet 8:422-46"
+        ]
+      }
+    },
+    "fluoxetine": {
+      "class": "SSRI Antidepressant",
+      "mechanism": "Serotonin reuptake inhibitor (SERT)",
+      "binding_site": "sert",
+      "pharmacodynamics": {
+        "ki_nM": 0.8,
+        "ic50_nM": 5,
+        "sert_occupancy_20mg": 0.80,
+        "references": [
+          "Wong DT et al (1995) Fluoxetine and its two enantiomers. Int Clin Psychopharmacol 10:11-21",
+          "Meyer JH et al (2004) Serotonin transporter occupancy of five SSRIs at different doses. Am J Psychiatry 161:826-35"
+        ]
+      },
+      "pharmacokinetics": {
+        "bioavailability": 0.72,
+        "vd_L_kg": 20.0,
+        "protein_binding": 0.95,
+        "clearance_L_h_kg": 0.02,
+        "half_life_h": 96,
+        "brain_partition": 1.2,
+        "molecular_weight": 309.33,
+        "cyp_metabolism": {"CYP2D6": 0.60, "CYP2C9": 0.20, "CYP3A4": 0.20},
+        "references": [
+          "Hiemke C, Hartter S (2000) Pharmacokinetics of SSRIs. Pharmacol Ther 85:11-28"
+        ]
+      },
+      "clinical_effects": {
+        "dose_mg": 20,
+        "route": "oral",
+        "latency_weeks": 4,
+        "expected_effects": {
+          "antidepressant_pct": 60,
+          "anxiolytic_pct": 50,
+          "sert_occupancy_pct": 80
+        },
+        "references": [
+          "Anderson IM (2000) SSRIs versus tricyclic antidepressants. Depress Anxiety 12:1-17"
+        ]
+      }
+    },
+    "levodopa": {
+      "class": "Dopamine Precursor",
+      "mechanism": "Dopamine synthesis substrate (AADC)",
+      "binding_site": "dopamine_synthesis",
+      "pharmacodynamics": {
+        "conversion_to_dopamine": 0.05,
+        "requires_carbidopa": true,
+        "references": [
+          "Contin M, Martinelli P (2010) Pharmacokinetics of levodopa. J Neurol 257:S253-61",
+          "Olanow CW et al (2006) Levodopa in Parkinson's disease. Lancet Neurol 5:677-89"
+        ]
+      },
+      "pharmacokinetics": {
+        "bioavailability": 0.30,
+        "vd_L_kg": 0.8,
+        "protein_binding": 0.10,
+        "clearance_L_h_kg": 0.5,
+        "half_life_h": 1.5,
+        "brain_partition": 0.8,
+        "molecular_weight": 197.19,
+        "transport": "LAT1 transporter",
+        "references": [
+          "Nyholm D (2006) Pharmacokinetic optimisation in treatment of Parkinson's. Clin Pharmacokinet 45:109-36"
+        ]
+      },
+      "clinical_effects": {
+        "dose_mg": 100,
+        "route": "oral",
+        "expected_effects": {
+          "updrs_improvement_pct": 30,
+          "motor_function_improvement_pct": 40,
+          "on_time_increase_h": 2
+        },
+        "references": [
+          "Goetz CG et al (2007) Levodopa for Parkinson disease. Mov Disord 22:2062-9"
+        ]
+      }
+    },
+    "haloperidol": {
+      "class": "Typical Antipsychotic",
+      "mechanism": "Dopamine D2 receptor antagonist",
+      "binding_site": "d2_receptor",
+      "pharmacodynamics": {
+        "ki_nM": 1.0,
+        "d2_occupancy_therapeutic": 0.70,
+        "eps_threshold_occupancy": 0.80,
+        "references": [
+          "Seeman P (2002) Atypical antipsychotics. Can J Psychiatry 47:27-38",
+          "Kapur S et al (2000) Relationship between D2 occupancy and clinical response. Am J Psychiatry 157:514-20"
+        ]
+      },
+      "pharmacokinetics": {
+        "bioavailability": 0.60,
+        "vd_L_kg": 18.0,
+        "protein_binding": 0.92,
+        "clearance_L_h_kg": 0.6,
+        "half_life_h": 18,
+        "brain_partition": 1.5,
+        "molecular_weight": 375.86,
+        "cyp_metabolism": {"CYP2D6": 0.40, "CYP3A4": 0.50},
+        "references": [
+          "Kudo S, Ishizaki T (1999) Pharmacokinetics of haloperidol. Clin Pharmacokinet 37:435-56"
+        ]
+      },
+      "clinical_effects": {
+        "dose_mg": 5,
+        "route": "oral",
+        "expected_effects": {
+          "antipsychotic_pct": 75,
+          "sedation_pct": 40,
+          "eps_risk_pct": 30
+        },
+        "references": [
+          "Leucht S et al (2013) Comparative efficacy of antipsychotics. Lancet 382:951-62"
+        ]
+      }
+    }
+  },
+  "validation_criteria": {
+    "receptor_occupancy_error_max_pct": 15,
+    "clinical_effect_error_max_pct": 20,
+    "pk_parameter_error_max_pct": 25,
+    "pass_threshold": 0.80
+  },
+  "references_databases": [
+    "PDSP Ki Database (NIMH)",
+    "ChEMBL Database",
+    "DrugBank",
+    "PubChem",
+    "IUPHAR/BPS Guide to Pharmacology"
+  ]
+}

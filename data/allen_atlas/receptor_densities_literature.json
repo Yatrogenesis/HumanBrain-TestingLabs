@@ -1,0 +1,314 @@
+{
+  "source": "Literature compilation",
+  "version": "1.0",
+  "date": "2025-11-30",
+  "units": "Normalized relative density (0-1)",
+  "receptors": {
+    "GABRA1": {
+      "prefrontal_cortex": 0.85,
+      "motor_cortex": 0.8,
+      "somatosensory_cortex": 0.82,
+      "hippocampus": 0.75,
+      "amygdala": 0.7,
+      "thalamus": 0.9,
+      "hypothalamus": 0.45,
+      "substantia_nigra": 0.3,
+      "ventral_tegmental_area": 0.35,
+      "nucleus_accumbens": 0.55,
+      "caudate": 0.5,
+      "putamen": 0.52,
+      "cerebellum": 0.95,
+      "brainstem": 0.4,
+      "locus_coeruleus": 0.35,
+      "raphe_nuclei": 0.3
+    },
+    "GABRA2": {
+      "prefrontal_cortex": 0.6,
+      "motor_cortex": 0.4,
+      "somatosensory_cortex": 0.45,
+      "hippocampus": 0.85,
+      "amygdala": 0.9,
+      "thalamus": 0.5,
+      "hypothalamus": 0.55,
+      "substantia_nigra": 0.25,
+      "ventral_tegmental_area": 0.3,
+      "nucleus_accumbens": 0.65,
+      "caudate": 0.35,
+      "putamen": 0.38,
+      "cerebellum": 0.2,
+      "brainstem": 0.3,
+      "locus_coeruleus": 0.4,
+      "raphe_nuclei": 0.35
+    },
+    "GABRA5": {
+      "prefrontal_cortex": 0.4,
+      "motor_cortex": 0.2,
+      "somatosensory_cortex": 0.25,
+      "hippocampus": 0.95,
+      "amygdala": 0.45,
+      "thalamus": 0.15,
+      "hypothalamus": 0.2,
+      "substantia_nigra": 0.1,
+      "ventral_tegmental_area": 0.12,
+      "nucleus_accumbens": 0.25,
+      "caudate": 0.15,
+      "putamen": 0.18,
+      "cerebellum": 0.05,
+      "brainstem": 0.08,
+      "locus_coeruleus": 0.1,
+      "raphe_nuclei": 0.08
+    },
+    "GABRB3": {
+      "prefrontal_cortex": 0.75,
+      "motor_cortex": 0.7,
+      "somatosensory_cortex": 0.72,
+      "hippocampus": 0.8,
+      "amygdala": 0.78,
+      "thalamus": 0.85,
+      "hypothalamus": 0.6,
+      "substantia_nigra": 0.4,
+      "ventral_tegmental_area": 0.45,
+      "nucleus_accumbens": 0.55,
+      "caudate": 0.5,
+      "putamen": 0.52,
+      "cerebellum": 0.7,
+      "brainstem": 0.55,
+      "locus_coeruleus": 0.5,
+      "raphe_nuclei": 0.45
+    },
+    "DRD1": {
+      "prefrontal_cortex": 0.45,
+      "motor_cortex": 0.25,
+      "somatosensory_cortex": 0.2,
+      "hippocampus": 0.15,
+      "amygdala": 0.3,
+      "thalamus": 0.2,
+      "hypothalamus": 0.25,
+      "substantia_nigra": 0.35,
+      "ventral_tegmental_area": 0.3,
+      "nucleus_accumbens": 0.95,
+      "caudate": 0.9,
+      "putamen": 0.92,
+      "cerebellum": 0.05,
+      "brainstem": 0.1,
+      "locus_coeruleus": 0.08,
+      "raphe_nuclei": 0.05
+    },
+    "DRD2": {
+      "prefrontal_cortex": 0.3,
+      "motor_cortex": 0.15,
+      "somatosensory_cortex": 0.12,
+      "hippocampus": 0.2,
+      "amygdala": 0.35,
+      "thalamus": 0.25,
+      "hypothalamus": 0.4,
+      "substantia_nigra": 0.85,
+      "ventral_tegmental_area": 0.8,
+      "nucleus_accumbens": 0.9,
+      "caudate": 0.88,
+      "putamen": 0.9,
+      "cerebellum": 0.05,
+      "brainstem": 0.15,
+      "locus_coeruleus": 0.1,
+      "raphe_nuclei": 0.12
+    },
+    "HTR1A": {
+      "prefrontal_cortex": 0.7,
+      "motor_cortex": 0.45,
+      "somatosensory_cortex": 0.5,
+      "hippocampus": 0.9,
+      "amygdala": 0.75,
+      "thalamus": 0.3,
+      "hypothalamus": 0.5,
+      "substantia_nigra": 0.2,
+      "ventral_tegmental_area": 0.25,
+      "nucleus_accumbens": 0.4,
+      "caudate": 0.25,
+      "putamen": 0.28,
+      "cerebellum": 0.15,
+      "brainstem": 0.45,
+      "locus_coeruleus": 0.35,
+      "raphe_nuclei": 0.95
+    },
+    "HTR2A": {
+      "prefrontal_cortex": 0.9,
+      "motor_cortex": 0.75,
+      "somatosensory_cortex": 0.8,
+      "hippocampus": 0.55,
+      "amygdala": 0.6,
+      "thalamus": 0.4,
+      "hypothalamus": 0.35,
+      "substantia_nigra": 0.15,
+      "ventral_tegmental_area": 0.2,
+      "nucleus_accumbens": 0.35,
+      "caudate": 0.3,
+      "putamen": 0.32,
+      "cerebellum": 0.1,
+      "brainstem": 0.25,
+      "locus_coeruleus": 0.2,
+      "raphe_nuclei": 0.15
+    },
+    "GRIN2B": {
+      "prefrontal_cortex": 0.85,
+      "motor_cortex": 0.7,
+      "somatosensory_cortex": 0.72,
+      "hippocampus": 0.9,
+      "amygdala": 0.65,
+      "thalamus": 0.55,
+      "hypothalamus": 0.4,
+      "substantia_nigra": 0.3,
+      "ventral_tegmental_area": 0.35,
+      "nucleus_accumbens": 0.5,
+      "caudate": 0.45,
+      "putamen": 0.48,
+      "cerebellum": 0.25,
+      "brainstem": 0.35,
+      "locus_coeruleus": 0.4,
+      "raphe_nuclei": 0.3
+    },
+    "OPRM1": {
+      "prefrontal_cortex": 0.35,
+      "motor_cortex": 0.2,
+      "somatosensory_cortex": 0.25,
+      "hippocampus": 0.3,
+      "amygdala": 0.7,
+      "thalamus": 0.75,
+      "hypothalamus": 0.6,
+      "substantia_nigra": 0.4,
+      "ventral_tegmental_area": 0.65,
+      "nucleus_accumbens": 0.8,
+      "caudate": 0.55,
+      "putamen": 0.58,
+      "cerebellum": 0.15,
+      "brainstem": 0.85,
+      "locus_coeruleus": 0.7,
+      "raphe_nuclei": 0.5
+    }
+  },
+  "regions": {
+    "prefrontal_cortex": {
+      "allen_ids": [
+        10161,
+        10162
+      ],
+      "abbrev": "PFC"
+    },
+    "motor_cortex": {
+      "allen_ids": [
+        10141
+      ],
+      "abbrev": "M1"
+    },
+    "somatosensory_cortex": {
+      "allen_ids": [
+        10154
+      ],
+      "abbrev": "S1"
+    },
+    "hippocampus": {
+      "allen_ids": [
+        10294
+      ],
+      "abbrev": "HIP"
+    },
+    "amygdala": {
+      "allen_ids": [
+        10361
+      ],
+      "abbrev": "AMY"
+    },
+    "thalamus": {
+      "allen_ids": [
+        10390
+      ],
+      "abbrev": "THA"
+    },
+    "hypothalamus": {
+      "allen_ids": [
+        10398
+      ],
+      "abbrev": "HYP"
+    },
+    "substantia_nigra": {
+      "allen_ids": [
+        10450
+      ],
+      "abbrev": "SNc"
+    },
+    "ventral_tegmental_area": {
+      "allen_ids": [
+        10451
+      ],
+      "abbrev": "VTA"
+    },
+    "nucleus_accumbens": {
+      "allen_ids": [
+        10333
+      ],
+      "abbrev": "NAc"
+    },
+    "caudate": {
+      "allen_ids": [
+        10334
+      ],
+      "abbrev": "CAU"
+    },
+    "putamen": {
+      "allen_ids": [
+        10335
+      ],
+      "abbrev": "PUT"
+    },
+    "cerebellum": {
+      "allen_ids": [
+        10512
+      ],
+      "abbrev": "CB"
+    },
+    "brainstem": {
+      "allen_ids": [
+        10443
+      ],
+      "abbrev": "BS"
+    },
+    "locus_coeruleus": {
+      "allen_ids": [
+        10464
+      ],
+      "abbrev": "LC"
+    },
+    "raphe_nuclei": {
+      "allen_ids": [
+        10466
+      ],
+      "abbrev": "RAP"
+    }
+  },
+  "references": {
+    "general": [
+      "Zilles K, Amunts K (2009) Receptor mapping: architecture of the human cerebral cortex. Curr Opin Neurol 22(4):331-9",
+      "Palomero-Gallagher N, Zilles K (2018) Cyto- and receptor architectonic mapping of the human brain. Handb Clin Neurol 150:355-387"
+    ],
+    "GABA": [
+      "Sieghart W, Sperk G (2002) Subunit composition, distribution and function of GABA(A) receptor subtypes. Curr Top Med Chem 2(8):795-816",
+      "Mohler H (2006) GABA(A) receptor diversity and pharmacology. Cell Tissue Res 326(2):505-16",
+      "Rudolph U, Knoflach F (2011) Beyond classical benzodiazepines: novel therapeutic potential of GABAA receptor subtypes. Nat Rev Drug Discov 10(9):685-97"
+    ],
+    "Dopamine": [
+      "Volkow ND et al (2009) Imaging dopamine's role in drug abuse and addiction. Neuropharmacology 56 Suppl 1:3-8",
+      "Beaulieu JM, Gainetdinov RR (2011) The physiology, signaling, and pharmacology of dopamine receptors. Pharmacol Rev 63(1):182-217"
+    ],
+    "Serotonin": [
+      "Millan MJ et al (2008) Signaling at G-protein-coupled serotonin receptors. Brain Res Rev 58(2):340-79",
+      "Carhart-Harris RL, Nutt DJ (2017) Serotonin and brain function: a tale of two receptors. J Psychopharmacol 31(9):1091-1120"
+    ],
+    "NMDA": [
+      "Paoletti P et al (2013) NMDA receptor subunit diversity: impact on receptor properties. Nat Rev Neurosci 14(6):383-400",
+      "Zanos P, Gould TD (2018) Mechanisms of ketamine action as an antidepressant. Mol Psychiatry 23(4):801-811"
+    ],
+    "Opioid": [
+      "Stein C (2016) Opioid Receptors. Annu Rev Med 67:433-51",
+      "Valentino RJ, Volkow ND (2018) Untangling the complexity of opioid receptor function. Neuropsychopharmacology 43(13):2514-2520"
+    ]
+  }
+}

@@ -1,0 +1,268 @@
+{
+  "source": "Allen Human Brain Atlas",
+  "api_version": "v2",
+  "download_date": "2025-11-30",
+  "genes": {
+    "GABRA1": {
+      "info": {
+        "name": "GABA-A alpha-1",
+        "role": "sedation, anxiolysis"
+      },
+      "allen_id": 2538,
+      "entrez_id": 2554,
+      "name": "gamma-aminobutyric acid (GABA) A receptor, alpha 1"
+    },
+    "GABRA2": {
+      "info": {
+        "name": "GABA-A alpha-2",
+        "role": "anxiolysis"
+      },
+      "allen_id": 2539,
+      "entrez_id": 2555,
+      "name": "gamma-aminobutyric acid (GABA) A receptor, alpha 2"
+    },
+    "GABRA3": {
+      "info": {
+        "name": "GABA-A alpha-3",
+        "role": "myorelaxation"
+      },
+      "allen_id": 2540,
+      "entrez_id": 2556,
+      "name": "gamma-aminobutyric acid (GABA) A receptor, alpha 3"
+    },
+    "GABRA5": {
+      "info": {
+        "name": "GABA-A alpha-5",
+        "role": "memory, cognition"
+      },
+      "allen_id": 2542,
+      "entrez_id": 2558,
+      "name": "gamma-aminobutyric acid (GABA) A receptor, alpha 5"
+    },
+    "GABRB1": {
+      "info": {
+        "name": "GABA-A beta-1",
+        "role": "anesthetic binding"
+      },
+      "allen_id": 2544,
+      "entrez_id": 2560,
+      "name": "gamma-aminobutyric acid (GABA) A receptor, beta 1"
+    },
+    "GABRB2": {
+      "info": {
+        "name": "GABA-A beta-2",
+        "role": "sedation"
+      },
+      "allen_id": 2545,
+      "entrez_id": 2561,
+      "name": "gamma-aminobutyric acid (GABA) A receptor, beta 2"
+    },
+    "GABRB3": {
+      "info": {
+        "name": "GABA-A beta-3",
+        "role": "anesthesia"
+      },
+      "allen_id": 2546,
+      "entrez_id": 2562,
+      "name": "gamma-aminobutyric acid (GABA) A receptor, beta 3"
+    },
+    "GABRG2": {
+      "info": {
+        "name": "GABA-A gamma-2",
+        "role": "BZ site formation"
+      },
+      "allen_id": 2550,
+      "entrez_id": 2566,
+      "name": "gamma-aminobutyric acid (GABA) A receptor, gamma 2"
+    },
+    "DRD1": {
+      "info": {
+        "name": "Dopamine D1",
+        "role": "reward, motor"
+      },
+      "allen_id": 1800,
+      "entrez_id": 1812,
+      "name": "dopamine receptor D1"
+    },
+    "DRD2": {
+      "info": {
+        "name": "Dopamine D2",
+        "role": "motor control, antipsychotic target"
+      },
+      "allen_id": 1801,
+      "entrez_id": 1813,
+      "name": "dopamine receptor D2"
+    },
+    "HTR1A": {
+      "info": {
+        "name": "Serotonin 5-HT1A",
+        "role": "anxiety, depression"
+      },
+      "allen_id": 3330,
+      "entrez_id": 3350,
+      "name": "5-hydroxytryptamine (serotonin) receptor 1A, G protein-coupled"
+    },
+    "HTR2A": {
+      "info": {
+        "name": "Serotonin 5-HT2A",
+        "role": "psychedelics, antipsychotics"
+      },
+      "allen_id": 3336,
+      "entrez_id": 3356,
+      "name": "5-hydroxytryptamine (serotonin) receptor 2A, G protein-coupled"
+    },
+    "GRIN1": {
+      "info": {
+        "name": "NMDA NR1",
+        "role": "obligatory subunit"
+      },
+      "allen_id": 2885,
+      "entrez_id": 2902,
+      "name": "glutamate receptor, ionotropic, N-methyl D-aspartate 1"
+    },
+    "GRIN2A": {
+      "info": {
+        "name": "NMDA NR2A",
+        "role": "synaptic plasticity"
+      },
+      "allen_id": 2886,
+      "entrez_id": 2903,
+      "name": "glutamate receptor, ionotropic, N-methyl D-aspartate 2A"
+    },
+    "GRIN2B": {
+      "info": {
+        "name": "NMDA NR2B",
+        "role": "ketamine target"
+      },
+      "allen_id": 2887,
+      "entrez_id": 2904,
+      "name": "glutamate receptor, ionotropic, N-methyl D-aspartate 2B"
+    },
+    "OPRM1": {
+      "info": {
+        "name": "Mu opioid receptor",
+        "role": "analgesia, euphoria"
+      },
+      "allen_id": 1090887,
+      "entrez_id": null,
+      "name": "opioid receptor, mu 1"
+    },
+    "OPRD1": {
+      "info": {
+        "name": "Delta opioid receptor",
+        "role": "analgesia"
+      },
+      "allen_id": 4953,
+      "entrez_id": 4985,
+      "name": "opioid receptor, delta 1"
+    },
+    "OPRK1": {
+      "info": {
+        "name": "Kappa opioid receptor",
+        "role": "dysphoria, analgesia"
+      },
+      "allen_id": 4954,
+      "entrez_id": 4986,
+      "name": "opioid receptor, kappa 1"
+    }
+  },
+  "regions": {
+    "prefrontal_cortex": {
+      "allen_ids": [
+        10161,
+        10162
+      ],
+      "abbrev": "PFC"
+    },
+    "motor_cortex": {
+      "allen_ids": [
+        10141
+      ],
+      "abbrev": "M1"
+    },
+    "somatosensory_cortex": {
+      "allen_ids": [
+        10154
+      ],
+      "abbrev": "S1"
+    },
+    "hippocampus": {
+      "allen_ids": [
+        10294
+      ],
+      "abbrev": "HIP"
+    },
+    "amygdala": {
+      "allen_ids": [
+        10361
+      ],
+      "abbrev": "AMY"
+    },
+    "thalamus": {
+      "allen_ids": [
+        10390
+      ],
+      "abbrev": "THA"
+    },
+    "hypothalamus": {
+      "allen_ids": [
+        10398
+      ],
+      "abbrev": "HYP"
+    },
+    "substantia_nigra": {
+      "allen_ids": [
+        10450
+      ],
+      "abbrev": "SNc"
+    },
+    "ventral_tegmental_area": {
+      "allen_ids": [
+        10451
+      ],
+      "abbrev": "VTA"
+    },
+    "nucleus_accumbens": {
+      "allen_ids": [
+        10333
+      ],
+      "abbrev": "NAc"
+    },
+    "caudate": {
+      "allen_ids": [
+        10334
+      ],
+      "abbrev": "CAU"
+    },
+    "putamen": {
+      "allen_ids": [
+        10335
+      ],
+      "abbrev": "PUT"
+    },
+    "cerebellum": {
+      "allen_ids": [
+        10512
+      ],
+      "abbrev": "CB"
+    },
+    "brainstem": {
+      "allen_ids": [
+        10443
+      ],
+      "abbrev": "BS"
+    },
+    "locus_coeruleus": {
+      "allen_ids": [
+        10464
+      ],
+      "abbrev": "LC"
+    },
+    "raphe_nuclei": {
+      "allen_ids": [
+        10466
+      ],
+      "abbrev": "RAP"
+    }
+  }
+}
